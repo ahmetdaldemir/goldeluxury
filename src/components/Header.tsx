@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { langLabels, langs } from "../i18n";
 import { useLanguage } from "../language";
+import { useSite } from "../site";
 
 const links = [
   ["project", "#proje"],
@@ -13,6 +15,7 @@ const links = [
 
 export function Header() {
   const { t, lang, setLang } = useLanguage();
+  const { site } = useSite();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -23,10 +26,17 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
       <a className="brand" href="#top" aria-label={t.brand}>
-        <img src="/media/logo.png" alt="Golden Luxury İnşaat" />
+        <img src={site.settings.logo} alt={t.company} />
       </a>
 
       <nav className={`nav ${open ? "is-open" : ""}`} aria-label="Primary">
@@ -38,17 +48,24 @@ export function Header() {
       </nav>
 
       <div className="header-actions">
+        <a className="header-cta" href="#iletisim">
+          {t.nav.contact}
+        </a>
         <div className="lang-switch" role="group" aria-label="Language">
-          <button type="button" className={lang === "tr" ? "is-active" : ""} onClick={() => setLang("tr")}>
-            TR
-          </button>
-          <button type="button" className={lang === "en" ? "is-active" : ""} onClick={() => setLang("en")}>
-            EN
-          </button>
+          {langs.map((code) => (
+            <button
+              key={code}
+              type="button"
+              className={lang === code ? "is-active" : ""}
+              onClick={() => setLang(code)}
+            >
+              {langLabels[code]}
+            </button>
+          ))}
         </div>
         <button
           type="button"
-          className="menu-btn"
+          className={`menu-btn ${open ? "is-open" : ""}`}
           aria-expanded={open}
           aria-label="Menu"
           onClick={() => setOpen((v) => !v)}

@@ -1,9 +1,10 @@
 import { FormEvent, useState } from "react";
-import { email, phones, whatsapp } from "../data";
 import { useLanguage } from "../language";
+import { useSite } from "../site";
 
 export function Contact() {
   const { t } = useLanguage();
+  const { site } = useSite();
   const [status, setStatus] = useState("");
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -14,33 +15,33 @@ export function Contact() {
     const phone = String(data.get("phone") ?? "");
     const message = String(data.get("message") ?? "");
     const body = encodeURIComponent(`${name}\n${from}\n${phone}\n\n${message}`);
-    window.location.href = `mailto:${email}?subject=Golden%20Luxury&body=${body}`;
+    window.location.href = `mailto:${site.settings.email}?subject=Golden%20Luxury&body=${body}`;
     setStatus(t.contact.sent);
   }
 
   return (
     <section className="section section-ink" id="iletisim">
       <div className="container split">
-        <div>
+        <div className="reveal">
           <p className="kicker light">{t.contact.eyebrow}</p>
           <h2>{t.contact.title}</h2>
           <ul className="contact-list">
-            {phones.map((phone) => (
+            {site.phones.map((phone) => (
               <li key={phone.display}>
                 <a href={phone.href}>{phone.display}</a>
               </li>
             ))}
             <li>
-              <a href={`mailto:${email}`}>{email}</a>
+              <a href={`mailto:${site.settings.email}`}>{site.settings.email}</a>
             </li>
             <li>{t.contact.office}</li>
           </ul>
-          <a className="btn btn-gold" href={whatsapp} target="_blank" rel="noreferrer">
+          <a className="btn btn-gold" href={site.settings.whatsapp} target="_blank" rel="noreferrer">
             {t.contact.whatsapp}
           </a>
         </div>
 
-        <form className="contact-form" onSubmit={onSubmit}>
+        <form className="contact-form reveal reveal-delay-1" onSubmit={onSubmit}>
           <label>
             {t.contact.name}
             <input name="name" required autoComplete="name" />

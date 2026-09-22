@@ -4,3 +4,6 @@ dist
 *.local
 .verify
 assets
+server/node_modules
+server/.env
+public/media/uploads

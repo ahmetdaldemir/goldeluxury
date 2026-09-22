@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { AdminApp } from "./admin/AdminApp";
 import { Amenities } from "./components/Amenities";
 import { Availability } from "./components/Availability";
 import { Contact } from "./components/Contact";
@@ -10,7 +12,10 @@ import { Interiors } from "./components/Interiors";
 import { Location } from "./components/Location";
 import { Project } from "./components/Project";
 import { Team } from "./components/Team";
+import { WhatsAppFloat } from "./components/WhatsAppFloat";
 import { LanguageProvider } from "./language";
+import { SiteProvider } from "./site";
+import { useReveal } from "./useReveal";
 
 function ScrollToHash() {
   useEffect(() => {
@@ -24,7 +29,9 @@ function ScrollToHash() {
   return null;
 }
 
-export default function App() {
+function PublicSite() {
+  useReveal();
+
   return (
     <LanguageProvider>
       <ScrollToHash />
@@ -41,6 +48,21 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
+      <WhatsAppFloat />
     </LanguageProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <SiteProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<PublicSite />} />
+          <Route path="/admin/*" element={<AdminApp />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </SiteProvider>
   );
 }

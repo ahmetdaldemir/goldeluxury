@@ -10,11 +10,11 @@ export function Interiors() {
   return (
     <section className="section" id="ic-mekan">
       <div className="container">
-        <div className="section-head">
+        <div className="section-head reveal">
           <p className="kicker">{t.interiors.eyebrow}</p>
           <h2>{t.interiors.title}</h2>
         </div>
-        <div className="interior-grid">
+        <div className="interior-grid reveal reveal-delay-1">
           {t.interiors.items.map((item, index) => (
             <figure key={item.src}>
               <button type="button" onClick={() => setActive(index)}>

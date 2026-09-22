@@ -20,47 +20,116 @@ export const exteriors = [
   { src: "/media/exterior-05.jpg", alt: "Golden Luxury bahçe cephesi" },
 ];
 
+export type Localized = { tr: string; en: string; de: string; ru: string };
+
+export type ArchitectureSlide = {
+  src: string;
+  label: Localized;
+};
+
+/** Full-bleed cinematic hero — architecture first, no cutouts. */
+export const architectureSlides: ArchitectureSlide[] = [
+  {
+    src: "/media/exterior-night-01.jpg",
+    label: {
+      tr: "Gece cephe",
+      en: "Night façade",
+      de: "Nachtfassade",
+      ru: "Ночной фасад",
+    },
+  },
+  {
+    src: "/media/exterior-night-02.jpg",
+    label: {
+      tr: "Ana giriş",
+      en: "Main entrance",
+      de: "Haupteingang",
+      ru: "Главный вход",
+    },
+  },
+  {
+    src: "/media/exterior-01.jpg",
+    label: {
+      tr: "Klasik cephe",
+      en: "Classical façade",
+      de: "Klassische Fassade",
+      ru: "Классический фасад",
+    },
+  },
+  {
+    src: "/media/amenity-pool.jpg",
+    label: {
+      tr: "Havuz & avlu",
+      en: "Pool & courtyard",
+      de: "Pool & Hof",
+      ru: "Бассейн и двор",
+    },
+  },
+  {
+    src: "/media/interior-duplex-living.jpg",
+    label: {
+      tr: "Dubleks salon",
+      en: "Duplex living",
+      de: "Duplex-Wohnzimmer",
+      ru: "Дуплекс гостиная",
+    },
+  },
+];
+
 export const team = [
   {
     name: "Abdulkadir Tunç",
-    photo: "/media/team/abdulkadir-tunc.webp",
-    heroPhoto: "/media/team/tunc-figure.png",
+    photo: "/media/team/abdulkadir-tunc-hero.jpg",
+    heroPhoto: "/media/team/abdulkadir-tunc-hero.jpg",
     background: "/media/exterior-night-02.jpg",
-    side: "left",
+    side: "left" as const,
     role: {
       tr: "Müteahhit · Kurucu Başkan",
       en: "Contractor · Founder & Chairman",
+      de: "Bauträger · Gründer & Vorsitzender",
+      ru: "Подрядчик · Основатель и председатель",
     },
     bio: {
-      tr: "MMT Tunç Group’un kurucusu ve sahibi. Alanya ve Kıbrıs’taki konut projelerinin müteahhidi.",
-      en: "Founder and owner of MMT Tunç Group. Contractor of the group’s residential work in Alanya and Cyprus.",
+      tr: "Golden Luxury İnşaat’ın kurucusu ve müteahhidi.",
+      en: "Founder and contractor of Golden Luxury Construction.",
+      de: "Gründer und Bauträger von Golden Luxury Bau.",
+      ru: "Основатель и подрядчик Golden Luxury Construction.",
     },
     quote: {
       tr: "Her proje, şehre bırakılan kalıcı bir imzadır. Golden Luxury’yi bu sorumlulukla inşa ediyoruz.",
       en: "Every project is a lasting signature on the city. We are building Golden Luxury with that duty.",
+      de: "Jedes Projekt ist eine bleibende Signatur in der Stadt. Wir bauen Golden Luxury mit dieser Verantwortung.",
+      ru: "Каждый проект — это долговечная подпись городу. Мы строим Golden Luxury с этой ответственностью.",
     },
   },
   {
     name: "Damla Tığlı",
-    photo: "/media/team/damla-tigli.jpg",
-    heroPhoto: "/media/team/damla-figure.png",
+    photo: "/media/team/damla-tigli-hero.jpg",
+    heroPhoto: "/media/team/damla-tigli-hero.jpg",
     background: "/media/exterior-night-01.jpg",
-    side: "right",
+    side: "right" as const,
     role: {
       tr: "Proje Sorumlusu · CEO",
       en: "Project Lead · CEO",
+      de: "Projektleitung · CEO",
+      ru: "Руководитель проекта · CEO",
     },
     bio: {
       tr: "Şirketin CEO’su. Golden Luxury projesinin satış ve proje sorumlusu.",
       en: "CEO of the company. Project lead for sales and delivery of Golden Luxury.",
+      de: "CEO des Unternehmens. Projektverantwortlich für Verkauf und Umsetzung von Golden Luxury.",
+      ru: "CEO компании. Руководитель продаж и реализации проекта Golden Luxury.",
     },
     quote: {
       tr: "Doğru ev, doğru insanla buluştuğunda yatırım bir yaşama dönüşür. Ben bu buluşmayı yönetirim.",
       en: "When the right home meets the right person, an investment becomes a life. I lead that meeting.",
+      de: "Wenn das richtige Zuhause den richtigen Menschen trifft, wird aus einer Investition ein Leben. Ich führe dieses Zusammentreffen.",
+      ru: "Когда правильный дом встречается с правильным человеком, инвестиция становится жизнью. Я веду эту встречу.",
     },
   },
 ] as const;
 
+/** @deprecated Team-based hero — site now uses architectureSlides. */
 export const heroSlides = [team[1], team[0]] as const;
 
 export const phones = [
@@ -152,8 +221,9 @@ export const units: Unit[] = [
   { id: "b-1", block: "B", no: 1, floor: "0", type: "1+1", area: 45.2, price: 250000, status: "available" },
 ];
 
-export function formatPrice(value: number, lang: "tr" | "en") {
-  const formatted = new Intl.NumberFormat(lang === "tr" ? "tr-TR" : "en-GB").format(value);
+export function formatPrice(value: number, lang: "tr" | "en" | "de" | "ru") {
+  const locale = lang === "tr" ? "tr-TR" : lang === "de" ? "de-DE" : lang === "ru" ? "ru-RU" : "en-GB";
+  const formatted = new Intl.NumberFormat(locale).format(value);
   return `€${formatted}`;
 }
 

@@ -6,7 +6,7 @@ export function Project() {
   return (
     <section className="section" id="proje">
       <div className="container">
-        <div className="stats">
+        <div className="stats reveal">
           {t.stats.map((item) => (
             <article key={item.label}>
               <strong>{item.value}</strong>
@@ -16,11 +16,11 @@ export function Project() {
         </div>
 
         <div className="split">
-          <div>
+          <div className="reveal">
             <p className="kicker">{t.project.eyebrow}</p>
             <h2>{t.project.title}</h2>
           </div>
-          <div>
+          <div className="reveal reveal-delay-1">
             <p className="intro">{t.project.lead}</p>
             <p className="muted">{t.project.body}</p>
             <dl className="facts">

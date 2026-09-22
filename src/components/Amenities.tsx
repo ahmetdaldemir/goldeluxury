@@ -6,11 +6,11 @@ export function Amenities() {
   return (
     <section className="section section-ink" id="sosyal">
       <div className="container">
-        <div className="section-head light">
+        <div className="section-head light reveal">
           <p className="kicker light">{t.amenities.eyebrow}</p>
           <h2>{t.amenities.title}</h2>
         </div>
-        <div className="amenity-grid">
+        <div className="amenity-grid reveal reveal-delay-1">
           {t.amenities.list.map((item) => (
             <article key={item.title}>
               <img src={item.src} alt={item.title} />

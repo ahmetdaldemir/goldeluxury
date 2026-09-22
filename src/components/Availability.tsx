@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
-import { formatArea, formatPrice, units, type Unit } from "../data";
+import { formatArea, formatPrice, type Unit } from "../data";
 import { useLanguage } from "../language";
+import { useSite } from "../site";
 
 type Filter = "all" | "available" | "A" | "B" | "1+1" | "2+1" | "dubleks";
 
@@ -15,11 +16,15 @@ function matches(unit: Unit, filter: Filter) {
 
 export function Availability() {
   const { t, lang } = useLanguage();
+  const { site } = useSite();
   const [filter, setFilter] = useState<Filter>("available");
 
   const visible = useMemo(
-    () => units.filter((unit) => matches(unit, filter)).sort((a, b) => a.block.localeCompare(b.block) || a.no - b.no),
-    [filter],
+    () =>
+      site.units
+        .filter((unit) => matches(unit, filter))
+        .sort((a, b) => a.block.localeCompare(b.block) || a.no - b.no),
+    [filter, site.units],
   );
 
   const filters: { id: Filter; label: string }[] = [
@@ -35,13 +40,13 @@ export function Availability() {
   return (
     <section className="section" id="daireler">
       <div className="container">
-        <div className="section-head">
+        <div className="section-head reveal">
           <p className="kicker">{t.units.eyebrow}</p>
           <h2>{t.units.title}</h2>
           <p className="muted">{t.units.note}</p>
         </div>
 
-        <div className="filters">
+        <div className="filters reveal reveal-delay-1">
           {filters.map((item) => (
             <button
               key={item.id}
@@ -54,16 +59,17 @@ export function Availability() {
           ))}
         </div>
 
-        <div className="table-wrap">
+        <div className="table-wrap reveal reveal-delay-2">
           <table className="unit-table">
             <thead>
               <tr>
-                <th>{lang === "tr" ? "Blok" : "Block"}</th>
+                <th>{lang === "tr" ? "Blok" : lang === "de" ? "Block" : lang === "ru" ? "Блок" : "Block"}</th>
                 <th>No</th>
-                <th>{lang === "tr" ? "Kat" : "Floor"}</th>
+                <th>{lang === "tr" ? "Kat" : lang === "de" ? "Etage" : lang === "ru" ? "Этаж" : "Floor"}</th>
                 <th>{t.units.filterHint}</th>
                 <th>m²</th>
-                <th>{lang === "tr" ? "Fiyat" : "Price"}</th>
+                <th>{lang === "tr" ? "Fiyat" : lang === "de" ? "Preis" : lang === "ru" ? "Цена" : "Price"}</th>
+                <th>{lang === "tr" ? "Durum" : "Status"}</th>
               </tr>
             </thead>
             <tbody>
@@ -71,15 +77,30 @@ export function Availability() {
                 <tr key={unit.id} className={unit.status === "sold" ? "is-sold" : ""}>
                   <td>{unit.block}</td>
                   <td>{unit.no}</td>
-                  <td>{unit.floor === "0" ? (lang === "tr" ? "Zemin" : "Ground") : unit.floor}</td>
+                  <td>
+                    {unit.floor === "0"
+                      ? lang === "tr"
+                        ? "Zemin"
+                        : lang === "de"
+                          ? "EG"
+                          : lang === "ru"
+                            ? "Цоколь"
+                            : "Ground"
+                      : unit.floor}
+                  </td>
                   <td>{unit.type}</td>
                   <td>{formatArea(unit.area)}</td>
                   <td>
                     {unit.status === "sold"
-                      ? t.units.sold
+                      ? "—"
                       : unit.price
                         ? formatPrice(unit.price, lang)
                         : "—"}
+                  </td>
+                  <td>
+                    <span className={`status-pill is-${unit.status}`}>
+                      {unit.status === "sold" ? t.units.sold : t.units.available}
+                    </span>
                   </td>
                 </tr>
               ))}
@@ -87,22 +108,26 @@ export function Availability() {
           </table>
         </div>
 
-        <div className="price-lists">
+        <div className="price-lists reveal">
           <figure>
-            <figcaption>{t.units.blockA} · {t.units.official}</figcaption>
-            <img src="/media/price-a.jpg" alt={t.units.blockA} />
+            <figcaption>
+              {t.units.blockA} · {t.units.official}
+            </figcaption>
+            <img src={site.settings.priceA} alt={t.units.blockA} />
           </figure>
           <figure>
-            <figcaption>{t.units.blockB} · {t.units.official}</figcaption>
-            <img src="/media/price-b.jpg" alt={t.units.blockB} />
+            <figcaption>
+              {t.units.blockB} · {t.units.official}
+            </figcaption>
+            <img src={site.settings.priceB} alt={t.units.blockB} />
           </figure>
         </div>
 
         <div className="plan-links">
-          <a href="/media/plans/a-block-share.pdf" target="_blank" rel="noreferrer">
+          <a href={site.settings.planA} target="_blank" rel="noreferrer">
             {t.units.blockA} {t.units.plans}
           </a>
-          <a href="/media/plans/b-block-share.pdf" target="_blank" rel="noreferrer">
+          <a href={site.settings.planB} target="_blank" rel="noreferrer">
             {t.units.blockB} {t.units.plans}
           </a>
         </div>
